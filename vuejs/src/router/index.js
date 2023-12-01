@@ -1,0 +1,42 @@
+import { createRouter, createWebHistory } from "vue-router";
+
+import HomepageView from '@/views/HomepageView.vue';
+import ProfileView from '@/views/user/ProfileView.vue';
+import SignupForm from '@/views/forms/SignupForm.vue';
+import LoginForm from '@/views/forms/LoginForm.vue';
+import CreatePostForm from '@/views/forms/CreatePostForm.vue';
+import EditProfileForm from '@/views/forms/EditProfileForm.vue';
+
+const routes = [
+    {
+        path: '/',
+        component: HomepageView
+    },
+    {
+        path: '/my-profile',
+        component: ProfileView
+    },
+    {
+        path: '/signup',
+        component: SignupForm
+    },
+    {
+        path: '/login',
+        component: LoginForm
+    },
+    {
+        path: '/create',
+        component: CreatePostForm
+    },
+    {
+        path: '/edit',
+        component: EditProfileForm
+    }
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes
+});
+
+export default router;
