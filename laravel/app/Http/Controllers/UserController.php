@@ -30,7 +30,12 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = new User();
-        $user
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->birthdate = $request->birthdate;
+        $user->save();
+        return response();
     }
 
     /**
