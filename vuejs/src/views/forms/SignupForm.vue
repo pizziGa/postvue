@@ -15,6 +15,7 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
+import router from '@/router'
 
 let name = ref()
 let email = ref()
@@ -22,7 +23,7 @@ let password = ref()
 let birthdate = ref()
 
 function signUp() {
-    axios.post('http://localhost:9000/api/user/store', {
+    axios.post('http://localhost:8000/api/user/store', {
         name: name.value,
         email: email.value,
         password: password.value,
@@ -32,5 +33,6 @@ function signUp() {
     }).catch(function (error) {
         console.log(error);
     });
+    router.push({ path: '/' });
 }
 </script>
