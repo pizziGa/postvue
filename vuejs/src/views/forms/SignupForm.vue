@@ -22,7 +22,7 @@ let password = ref()
 let birthdate = ref()
 
 function signUp() {
-    axios.post('http.//localhost:9000/api/user/store', {
+    axios.post('http://localhost:9000/api/user/store', {
         name: name.value,
         email: email.value,
         password: password.value,
