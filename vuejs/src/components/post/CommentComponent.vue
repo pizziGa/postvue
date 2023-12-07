@@ -1,20 +1,17 @@
 <template>
-    <h4 class="text-base pt-2 px-2">{{ author }}</h4>
-    <p class="text-sm px-4">{{ content }}</p>
+    <h4 class="text-base pt-2 px-2">{{ props.author }}</h4>
+    <p class="text-sm px-4">{{ props.content }}</p>
 </template>
 
-<script>
-export default {
-    name: 'CommentComponent',
-    props: {
-        author: {
-            type: String,
-            required: true
-        },
-        content: {
-            type: String,
-            required: true
-        }
+<script setup>
+const props = defineProps({
+    author: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
     }
-}
+})
 </script>

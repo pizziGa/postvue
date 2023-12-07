@@ -5,12 +5,15 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import PostComponent from '../components/post/PostComponent.vue';
-export default {
-    name: 'HomepageView',
-    components: {
-        PostComponent
-    }
-}
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
+
+onMounted(async () => {
+    
+})
 </script>

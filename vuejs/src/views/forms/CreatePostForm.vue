@@ -9,8 +9,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'CreatePostForm'
-}
+<script setup>
+
 </script>

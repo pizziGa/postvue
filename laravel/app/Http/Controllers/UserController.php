@@ -45,15 +45,23 @@ class UserController extends Controller
     }
 
     public function authenticate(AuthenticateUserRequest $request) {
-            if (auth()->attempt($request->only(['email', 'password']))) {
-                $user = auth()->user();
-                $token = $user->createToken('SECRET_KEY')->plainTextToken;
-                return response()->json([
-                    "token"=>$token
-                ]);
-            } else {
-                return response(status: 401);
-            }
+        if (auth()->attempt($request->only(['email', 'password']))) {
+            $user = auth()->user();
+            $token = $user->createToken('SECRET_KEY')->plainTextToken;
+            $request->session()->regenerate();
+            return response()->json([
+                "token"=>$token
+            ]);
+        } else {
+            return response(status: 401);
+        }
+    }
+
+    public function logout(Request $request) {
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return response()->noContent();
     }
 
     /**
@@ -61,7 +69,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $user = auth()->user();
+        $token = csrf_token();
+        return response()->json([
+            "user"=>$user
+        ]);
     }
 
     /**

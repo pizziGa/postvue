@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//
+
 Route::post('/user/store', [UserController::class, 'store']);
 
 Route::post('/user/authenticate', [UserController::class, 'authenticate']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth/sanctum')->post('/user/logout', [UserController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'show']);
