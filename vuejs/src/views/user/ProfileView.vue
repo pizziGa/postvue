@@ -2,8 +2,8 @@
     <div class="flex flex-col w-full">
         <div class="flex flex-col items-center justify-center gap-2 p-3 font-semibold">
             <div class="flex items-center justify-center rounded-full border-4 border-amber-400 shadow-sm shadow-secondary-black">
-                <img v-if="user.pfp" :src="'/pfp.jpg'" class="w-28 h-28 rounded-full">
-                <img v-else :src="'/default.jpg'" class="w-28 h-28 rounded-full">
+                <img v-if="user.pfp != undefined" :src="'/pfp.jpg'" class="w-28 h-28 rounded-full">
+                <img v-else :src="'/amore mio.PNG'" class="w-28 h-28 rounded-full">
             </div>
             
             <div class="flex flex-col items-center text-primary-black justify-center">
@@ -13,7 +13,7 @@
                     <p class="text-base">{{ user.following }} following</p>
                 </div>
                 
-                <p v-if="user.bio" class="text-center w-full text-sm md:w-1/2 font-normal">{{ user.bio }}</p>
+                <p v-if="user.bio != undefined" class="text-center w-full text-sm md:w-1/2 font-normal">{{ user.bio }}</p>
                 <p v-else class="text-center w-full text-sm md:w-1/2 font-normal">There isn't a bio here yet. Let's start writing one!</p>
             </div>
             <div class="flex flex-row justify-center gap-3 p-2">
@@ -37,21 +37,20 @@
 
 <script setup>
 import PostComponent from '../../components/post/PostComponent.vue';
-import { ref, computed, reactive, onMounted } from 'vue'
-import axios from 'axios'
-
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
+import { ref, computed, reactive, onBeforeMount } from 'vue'
+import { useUserStore } from '../../stores/UserStore';
 
 const isFollowed = ref(false)
 
 const user = reactive({
     name: '',
-    pfp: '',
+    bio: undefined,
+    pfp: undefined,
     followers: 0,
-    following: 0,
-    bio: ''
-})
+    following: 0
+});
+
+const userStore = useUserStore()
 
 const userFollowed = computed(() => {
     if (!isFollowed.value) {
@@ -70,11 +69,12 @@ function followUser() {
     }
 }
 
-onMounted(async () => {
-    await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-    const data = await axios.get('http://localhost:8000/api/user');
-    user.name = data.data.user.name;
-    user.bio = data.data.user.bio;
-    user.pfp = data.data.user.pfp;
+onBeforeMount(async () => {
+    const data = await userStore.actions.fetchUser()
+    user.name = data.name
+    user.bio = data.bio
+    user.pfp = data.pfp
+    user.followers = data.followers
+    user.following = data.following
 })
 </script>

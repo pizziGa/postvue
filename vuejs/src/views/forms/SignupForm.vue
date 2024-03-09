@@ -6,40 +6,21 @@
             <input type="text" v-model="email" placeholder="Email" class="rounded-md border-2 shadow-sm shadow-secondary-black w-80 h-12 border-primary-black bg-primary-white placeholder:font-semibold placeholder:text-lg p-1">
             <input type="password" v-model="password" placeholder="Password" class="rounded-md border-2 shadow-sm shadow-secondary-black w-80 h-12 border-primary-black bg-primary-white placeholder:font-semibold placeholder:text-lg p-1">
             <input type="date" v-model="birthdate" class="rounded-md border-2 shadow-sm shadow-secondary-black w-80 h-12 border-primary-black bg-primary-white placeholder:font-semibold placeholder:text-lg p-1">
-            <button @click="signUp()" class="rounded-md border-2 shadow-sm shadow-secondary-black border-primary-black  bg-amber-400 hover:bg-amber-500 duration-200 hover:cursor-pointer w-32 text-base p-1">Sign up</button>
+            <button @click="storeUser.actions.signup(name, email, password, birthdate)" class="rounded-md border-2 shadow-sm shadow-secondary-black border-primary-black  bg-amber-400 hover:bg-amber-500 duration-200 hover:cursor-pointer w-32 text-base p-1">Sign up</button>
         </div>
         <router-link to="/login" class="flex text-sm align-middle">Do you already have an account? Log in</router-link>
     </div>
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref } from 'vue'
-import router from '@/router'
+import { useUserStore } from '../../stores/UserStore';
 
-import TextInput from '../../components/shared/TextInput.vue'
-
-axios.defaults.withCredentials = true
-axios.defaults.withXSRFToken = true
+const storeUser = new useUserStore()
 
 let name = ref()
 let email = ref()
 let password = ref()
 let birthdate = ref()
 
-async function signUp() {
-    await axios.get('http://localhost:8000/sanctum/csrf-cookie').then(response => {
-        axios.post('http://localhost:8000/api/user/store', {
-            name: name.value,
-            email: email.value,
-            password: password.value,
-            birthdate: birthdate.value
-        }).then(function (response) {
-            router.push({ path: '/' });
-            console.log(response);
-        }).catch(function (error) {
-            console.log(error);
-        });
-    });
-}
 </script>

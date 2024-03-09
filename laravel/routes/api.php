@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,10 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 //
 
-Route::post('/user/store', [UserController::class, 'store']);
+Route::post('/user/store', [AuthUserController::class, 'store']);
 
-Route::post('/user/authenticate', [UserController::class, 'authenticate']);
+Route::post('/user/authenticate', [AuthUserController::class, 'authenticate']);
 
-Route::middleware('auth/sanctum')->post('/user/logout', [UserController::class, 'logout']);
+Route::middleware('auth:sanctum')->get('/user/logout', [AuthUserController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'show']);
+Route::middleware('auth:sanctum')->get('/user', [AuthUserController::class, 'show']);
+
+Route::middleware('auth:sanctum')->post('/user/update', [AuthUserController::class, 'update']);

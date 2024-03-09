@@ -25,7 +25,9 @@ class User extends Authenticatable
         'password',
         'pfp',
         'birthdate',
-        'bio'
+        'bio',
+        'followers',
+        'following'
     ];
 
     /**

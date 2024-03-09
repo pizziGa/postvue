@@ -7,13 +7,4 @@
 
 <script setup>
 import PostComponent from '../components/post/PostComponent.vue';
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
-
-onMounted(async () => {
-    
-})
 </script>
