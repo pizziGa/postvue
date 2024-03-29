@@ -12,5 +12,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    outDir: '../laravel/public/dist',
+    emptyOutDir: true,
+    manifest: true
   }
 })

@@ -17,6 +17,11 @@ export const useUserStore = defineStore('UserStore', () => {
     }
   })
 
+  http.interceptors.request.use(function (config) {
+      config.headers.Authorization = 'Bearer ' +  token.value;
+      return config;
+  });
+
   if (localStorage.getItem('token') && localStorage.getItem('name')) {
     token.value = localStorage.getItem('token')
     authName.value = localStorage.getItem('name')

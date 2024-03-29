@@ -21,7 +21,6 @@ const userStore = useUserStore()
 const posts = ref()
 
 onBeforeMount(() => {
-    console.log(router.currentRoute.value.name)
     if (router.currentRoute.value.name == 'explore') { 
         userStore.actions.fetchExplorePosts()
         .then(data => {
