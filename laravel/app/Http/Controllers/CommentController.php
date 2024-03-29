@@ -28,7 +28,19 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $storeData = $request->validate([
+            'content'=>'string|required'
+        ]);
+
+        $comment = new Comment();
+
+        $comment->content = $storeData['content'];
+        $comment->user_id = $request->user()->user_id;
+        $comment->post_id = $request->post_id;
+
+        $comment->save();
+
+        return response(200);
     }
 
     /**

@@ -1,16 +1,17 @@
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:latest
+  web:
+    image: webdevops/php-nginx:8.3
     ports:
       - 8080:80
     volumes:
-      - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d
-    depends_on:
-      - php
-  php:
-    image: php:8.2-fpm
-    volumes:
-      - ./:/var/www
+      - .:/app
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+    networks: 
+      - backendNet
+networks:
+  backendNet:
+    external: true
+    name: db-docker_backendNet

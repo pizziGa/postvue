@@ -6,12 +6,21 @@ import router from '@/router'
 export const useUserStore = defineStore('UserStore', () => {
   const token = ref()
 
+  const authName = ref()
+
   const isLoggedIn = ref(false)
 
-  if (localStorage.getItem('token') != '""') {
-    let dirtyToken = localStorage.getItem('token');
-    token.value = dirtyToken.replaceAll('"', '')
-    isLoggedIn.value = true;
+  const http = axios.create({
+    baseURL: 'http://localhost:8080/api/',
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('token')
+    }
+  })
+
+  if (localStorage.getItem('token') && localStorage.getItem('name')) {
+    token.value = localStorage.getItem('token')
+    authName.value = localStorage.getItem('name')
+    isLoggedIn.value = true
   } else {
     router.push({ path: '/login' })
   }
@@ -19,91 +28,143 @@ export const useUserStore = defineStore('UserStore', () => {
   watch(
     token,
     (tokenVal) => {
-      localStorage.setItem('token', JSON.stringify(tokenVal));
-    },
-    { deep: true }
+      localStorage.setItem('token', tokenVal)
+    }
+  )
+
+  watch ( 
+    authName,
+    (authNameVal) => {
+      localStorage.setItem('name', authNameVal)
+    }
   )
 
   const actions = {
-    async signup(n, e, p, b) {
-      try {
-        await axios.post('http://localhost:8000/api/user/store', {
-          name: n,
-          email: e,
-          password: p,
-          birthdate: b
-        })
+    signup(n, e, p, b) {
+      http.post('http://localhost:8080/api/user/store', {
+        name: n,
+        email: e,
+        password: p,
+        birthdate: b
+      })
+      .then(() => {
         router.push({ path: '/login' })
-      } catch (error) {
+      })
+      .catch (error => {
         alert(error)
-      }
+      })
     },
 
-    async authenticate(e, p) {
-      try {
-        const response = await axios.post('http://localhost:8000/api/user/authenticate', {
-          email: e,
-          password: p
-        })
+    authenticate(e, p) {
+      http.post('user/authenticate', {
+        email: e,
+        password: p
+      })
+      .then(response => {
         token.value = response.data.token
         isLoggedIn.value = true
+        authName.value = response.data.username
         router.push({ path: '/' })
-      } catch (error) {
+      })
+      .catch(error => {
         alert(error)
-      }
+      })
     },
 
-    async fetchUser() {
-      try {
-        let data = await axios.get('http://localhost:8000/api/user', 
-        { 
-          headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer '+token.value
-          }
-        })
-        return data.data.user
-      } catch (error) {
-        router.push('/login')
-      }
+    async fetchUser(username) {
+      const response = await http.get('user/profile/'+username)
+      return response.data
     },
 
-    async logout() {
-      try {
-        await axios.get('http://localhost:8000/api/user/logout', 
-        { 
-          headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer '+token.value
-          }
-        })
+    async fetchExplorePosts() {
+      const response = await http.get('/explore/posts')
+      return response.data.posts
+    },
+
+    async fetchFollowingPosts() {
+      const response = await http.get('/following/posts')
+      return response.data.posts
+    },
+
+    async fetchUserPost(username) {
+      const response = await http.get('user/'+username+'/posts')
+      return response.data.posts
+    },
+
+    logout() {
+      http.get('user/logout')
+      .then(() => {
         isLoggedIn.value = false
         token.value = ''
         localStorage.clear()
         router.push({ path: '/' })
-      } catch (error) {
-        alert(error)
-      }
+      })
+      .catch (error => {
+      alert(error)
+      })
     },
 
-    async update(file, name, bio) {
-      try {
-        await axios.post('http://localhost:8000/api/user/update',
-        { 
-          name: name,
-          bio: bio,
-          pfp: file,
-          headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer '+token.value
-          }
-        })
+    update(file, name, bio) {
+      http.postForm('http://localhost:8080/api/user/update',
+      { 
+        name: name,
+        bio: bio,
+        pfp: file,
+      })
+      .then(() => {
         router.push({ path: '/my-profile' })
-      } catch(error) {
-        alert(error)
-      }
+      })
+      .catch(error => {
+      alert(error)
+      })
+    },
+
+    upload(file, content) {
+      http.postForm('user/upload', {
+        'media': file,
+        'content': content
+      })
+    },
+
+    likePost(id, isLiked) {
+      http.get('post/'+id+'?isLiked='+isLiked)
+    },
+
+    uploadComment(id, comment) { 
+      http.postForm('post/'+id+'/comment', {
+        'content': comment
+      })
+    },
+
+    deletePost(id) {
+      http.delete('post/'+id)
+      .then(() => {
+        router.back()
+      })
+      .catch(error => {
+      alert(error)
+      })
+    },
+
+    followUser(followed) {
+      http.post('user/follow', 
+      {
+        'followed': followed
+      })
+    },
+
+    unfollowUser(followed) {
+      http.post('user/unfollow', 
+      {
+        'followed': followed
+      })
+    },
+
+    async searchUser(query) {
+      const response = await http.get('user/search/'+query)
+      return response.data.results
     }
   }
 
-  return {token, isLoggedIn, actions}
+  return {token, isLoggedIn, authName, actions}
 })

@@ -11,8 +11,16 @@ class Post extends Model
 
     protected $primaryKey = 'post_id';
     protected $fillable = [
-        'image',
-        'likes',
-        'content'
+        'media',
+        'content',
+        'type'
     ];
+
+    public function likes() {
+        return $this->belongsToMany(Like::class);
+    }
+
+    public function comments() {
+        return $this->hasMany('App\Models\Comment', 'post_id');
+    }
 }
