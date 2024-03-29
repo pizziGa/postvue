@@ -86,6 +86,7 @@ class AuthUserController extends Controller
 
         $followers = $user->followers()->get();
         $isFollowed = false;
+        
         foreach ($followers as $follower) {
             ($follower->follower_id == $request->user()->user_id) ? $isFollowed = true : $isFollowed = false;
         }

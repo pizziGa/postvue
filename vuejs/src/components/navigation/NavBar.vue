@@ -67,10 +67,10 @@
         <div v-if="userLogged.isLoggedIn" class="flex flex-row items-center justify-center px-6">
           <nav>
             <ul class="flex flex-row gap-5 font-semibold">
-              <li :class="[section.selected == 'following' ? 'text-dark-pastel-green' : 'text-timberwolf', 'hover:text-dark-pastel-green duration-200']">
+              <li :class="[router.currentRoute.value.name == 'following' ? 'text-dark-pastel-green' : 'text-timberwolf', 'hover:text-dark-pastel-green duration-200']">
                 <router-link to="/">Following</router-link>
               </li>
-              <li :class="[section.selected == 'explore' ? 'text-dark-pastel-green' : 'text-timberwolf', 'hover:text-dark-pastel-green duration-200']">
+              <li :class="[router.currentRoute.value.name == 'explore' ? 'text-dark-pastel-green' : 'text-timberwolf', 'hover:text-dark-pastel-green duration-200']">
                 <router-link to="/explore">Explore</router-link>
               </li>
             </ul>
@@ -160,10 +160,6 @@ watch(() => searchQuery.value, debounce(() => {
 router.beforeEach((to, from) => {
   searchQuery.value = ''
 })
-
-const section = defineProps([
-  'selected'
-])
 
 const menuIcon = computed(() => {
   if (isMenuOpened.value) {
