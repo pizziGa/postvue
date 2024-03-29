@@ -38,10 +38,10 @@
           :class="isSearchBoxOpened ? 'flex' : 'hidden'"
           class="md:flex md:flex-nowrap items-center md:flex-row pb-2 md:pb-0 gap-8 md:w-96 w-full"
         >
-          <div class="flex md:flex-nowrap w-full md:flex-[unset] md:w-96">
+          <div class="flex relative md:flex-nowrap w-full md:flex-[unset] md:w-96">
               <input
                 v-model="searchQuery"
-                class="md:ml-14 md:w-96 w-full p-2 md:p-1 placeholder:font-semibold bg-nightmare border-b-2 border-r-0 border-dark-pastel-green text-timberwolf placeholder:text-timberwolf font-semibold duration-200"
+                class="md:ml-14 md:w-96 w-full p-2 md:p-1 placeholder:font-semibold focus:outline-none bg-nightmare border-b-2 border-r-0 border-dark-pastel-green text-timberwolf placeholder:text-timberwolf font-semibold duration-200"
                 type="search"
                 placeholder="Search..."
               />
@@ -51,6 +51,15 @@
               >
                 <font-awesome-icon icon="fa-solid fa-search"></font-awesome-icon>
               </button>
+          </div>
+
+          <div v-if="searchBoxQuery" class="flex flex-col text-left absolute start-4 md:start-[187.2px] w-[333px] md:w-[286.3px] top-[110px] md:top-[51px] p-5 text-lg bg-night rounded-md rounded-t-none  text-timberwolf">
+            <ul v-for="result in results" :key="result.name">
+                <li>
+                  <router-link :to="'/'+result.name" 
+                  class="hover:text-dark-pastel-green duration-200">{{ result.name }}</router-link>
+                </li>
+            </ul>
           </div>
         </div>
 
@@ -69,64 +78,48 @@
         </div>
 
         <div class="flex-1"></div>
-        <button
-          @click="openMenu"
-          class="hidden md:flex items-center justify-center p-3 w-10 h-10 bg-dark-pastel-green hover:text-mantis duration-200 text-timberwolf rounded"
-        >
-          <font-awesome-icon v-bind:icon="['fa-solid', menuIcon]"></font-awesome-icon>
-        </button>
+        <div class="relative"></div>
+          <button
+            @click="openMenu"
+            class="hidden md:flex items-center focus:ring-2 focus:outline-none focus:ring-mantis  justify-center p-3 w-10 h-10 bg-dark-pastel-green hover:text-mantis duration-200 text-timberwolf rounded"
+          >
+            <font-awesome-icon v-bind:icon="['fa-solid', menuIcon]"></font-awesome-icon>
+          </button>
+
+          <div v-if="isMenuOpened" dir="rtl" class="flex flex-col text-left absolute start-4 top-14 md:top-[55px] p-5 text-lg bg-night rounded-md text-timberwolf">
+            <ul>
+              <div v-if="userLogged.isLoggedIn" >
+                <li>
+                  <router-link :to="'/'+userLogged.authName" class="hover:text-dark-pastel-green duration-200"
+                    >My profile <font-awesome-icon icon="fa-solid fa-user"></font-awesome-icon
+                  ></router-link>
+                </li>
+                <li>
+                  <router-link to="/create" class="hover:text-dark-pastel-green duration-200"
+                    >Create <font-awesome-icon icon="fa-solid fa-add"></font-awesome-icon
+                  ></router-link>
+                </li>
+                <li>
+                  <router-link to="/logout" class="hover:text-dark-pastel-green duration-200"
+                    >Logout <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket"></font-awesome-icon
+                  ></router-link>
+                </li>
+              </div>
+              <div v-else>
+                <li>
+                  <router-link to="/signup" class="hover:text-dark-pastel-green duration-200"
+                    >Register <font-awesome-icon icon="fa-solid fa-user-plus"></font-awesome-icon
+                  ></router-link>
+                </li>
+                <li>
+                  <router-link to="/login" class="hover:text-dark-pastel-green duration-200"
+                    >Login <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket"></font-awesome-icon
+                  ></router-link>
+                </li>
+              </div>
+            </ul>
+          </div>
       </div>
-    </div>
-
-    <!--User Menu-->
-    <div
-      v-if="isMenuOpened"
-      dir="rtl"
-      class="flex flex-col text-left start-4 fixed top-14 md:top-[55px] p-5 text-lg bg-nightmare rounded-md shadow-sm shadow-night text-timberwolf"
-    >
-      <ul>
-        <div v-if="userLogged.isLoggedIn" >
-          <li>
-            <router-link :to="'/'+userLogged.authName" class="hover:text-dark-pastel-green duration-200"
-              >My profile <font-awesome-icon icon="fa-solid fa-user"></font-awesome-icon
-            ></router-link>
-          </li>
-          <li>
-            <router-link to="/create" class="hover:text-dark-pastel-green duration-200"
-              >Create <font-awesome-icon icon="fa-solid fa-add"></font-awesome-icon
-            ></router-link>
-          </li>
-          <li>
-            <router-link to="/logout" class="hover:text-dark-pastel-green duration-200"
-              >Logout <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket"></font-awesome-icon
-            ></router-link>
-          </li>
-        </div>
-        <div v-else>
-          <li>
-            <router-link to="/signup" class="hover:text-dark-pastel-green duration-200"
-              >Register <font-awesome-icon icon="fa-solid fa-user-plus"></font-awesome-icon
-            ></router-link>
-          </li>
-          <li>
-            <router-link to="/login" class="hover:text-dark-pastel-green duration-200"
-              >Login <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket"></font-awesome-icon
-            ></router-link>
-          </li>
-        </div>
-      </ul>
-    </div>
-
-    <div
-      v-if="searchBoxQuery"
-      class="flex flex-col text-left start-48 w-64 fixed top-14 md:top-[55px] p-5 text-lg bg-nightmare rounded-md shadow-sm shadow-night text-timberwolf"
-    >
-      <ul v-for="result in results" :key="result.name">
-          <li>
-            <router-link :to="'/'+result.name" 
-            class="hover:text-dark-pastel-green duration-200">{{ result.name }}</router-link>
-          </li>
-      </ul>
     </div>
   </header>
 </template>
@@ -135,6 +128,7 @@
 import { ref, computed, watch } from 'vue'
 import { useUserStore } from '@/stores/UserStore';
 import router from '@/router'
+import debounce from 'lodash.debounce'
 
 const webName = 'InstaVue'
 const isMenuOpened = ref(false)
@@ -148,7 +142,7 @@ const searchBoxQuery = ref(false)
 
 const results = ref()
 
-watch(() => searchQuery.value, () => {
+watch(() => searchQuery.value, debounce(() => {
   if (searchQuery.value == '') {
     searchBoxQuery.value = false 
   } else {
@@ -161,7 +155,7 @@ watch(() => searchQuery.value, () => {
     console.log(error)
   })
   }
-})
+}, 500))
 
 router.beforeEach((to, from) => {
   searchQuery.value = ''

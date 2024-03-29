@@ -36,7 +36,7 @@
                         </div>
                     </div>  
                     <div class="flex flex-row flex-nowrap border-t-2 border-nightmare border-0">
-                        <input type="text" v-model="comment" placeholder="Comment..." class="w-[85%] p-2 rounded-bl-2xl placeholder:text-timberwolf text-timberwolf bg-night">
+                        <input type="text" v-model="comment" placeholder="Comment..." class="w-[85%] p-2 rounded-bl-2xl placeholder:text-timberwolf focus:outline-none text-timberwolf bg-night">
                         <button @click="userStore.actions.uploadComment(post.id, comment)" class="p-2 w-[25%] rounded-br-2xl border-primary-black text-timberwolf bg-dark-pastel-green hover:text-mantis duration-200">
                             <font-awesome-icon icon="fa-solid fa-arrow-right"></font-awesome-icon >
                         </button>
