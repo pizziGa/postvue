@@ -11,7 +11,7 @@ export const useUserStore = defineStore('UserStore', () => {
   const isLoggedIn = ref(false)
 
   const http = axios.create({
-    baseURL: 'http://localhost:8080/api/',
+    baseURL: '/api/',
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('UserStore', () => {
 
   const actions = {
     signup(n, e, p, b) {
-      http.post('http://localhost:8080/api/user/store', {
+      http.post('user/store', {
         name: n,
         email: e,
         password: p,
