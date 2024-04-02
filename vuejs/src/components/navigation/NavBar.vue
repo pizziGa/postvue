@@ -157,7 +157,7 @@ watch(() => searchQuery.value, debounce(() => {
   }
 }, 500))
 
-router.beforeEach((to, from) => {
+router.beforeEach(() => {
   searchQuery.value = ''
 })
 
