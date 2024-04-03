@@ -11,7 +11,7 @@ export const useUserStore = defineStore('UserStore', () => {
   const isLoggedIn = ref(false)
 
   const http = axios.create({
-    baseURL: '/api/',
+    baseURL: "/api/",
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
@@ -26,6 +26,7 @@ export const useUserStore = defineStore('UserStore', () => {
     token.value = localStorage.getItem('token')
     authName.value = localStorage.getItem('name')
     isLoggedIn.value = true
+    console.log(import.meta.env.VITE_BACKEND_URL)
   } else {
     router.push({ path: '/login' })
   }
