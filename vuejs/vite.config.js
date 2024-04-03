@@ -14,8 +14,8 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../laravel/public/dist',
-    emptyOutDir: true,
+    outDir: '../laravel/public',
+    emptyOutDir: false,
     manifest: true
   }
 })

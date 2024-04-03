@@ -1,15 +1,15 @@
 <?php
 
 function viteJS() {
-    $json = file_get_contents('dist/manifest.json');
+    $json = file_get_contents('manifest.json');
     $hash = json_decode($json, true);
-    return asset('dist/'.$hash['index.html']['file']);
+    return asset($hash['index.html']['file']);
 }
 
 function viteCSS() { 
-    $json = file_get_contents('dist/manifest.json');
+    $json = file_get_contents('manifest.json');
     $hash = json_decode($json, true);
-    return asset('dist/'.$hash['index.css']['file']);
+    return asset($hash['index.css']['file']);
 }
 
 ?>

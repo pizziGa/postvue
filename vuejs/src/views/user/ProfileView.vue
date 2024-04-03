@@ -3,7 +3,7 @@
         <div class="flex flex-col items-center justify-center gap-2 p-3 font-semibold">
             <div class="flex items-center justify-center rounded-full border-4 border-dark-pastel-green shadow-sm shadow-secondary-black">
                 <img v-if="user.pfp != undefined" :src="pfp_url" class="w-28 h-28 rounded-full">
-                <img v-else :src="'/amore mio.PNG'" class="w-28 h-28 rounded-full">
+                <img v-else :src="'/default.jpg'" class="w-28 h-28 rounded-full">
             </div>
             
             <div class="flex flex-col items-center justify-center text-timberwolf">
