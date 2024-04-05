@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('image');
             $table->unsignedBigInteger('likes')->default(0);
             $table->string('content');
+            $table->string('type');
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users');
