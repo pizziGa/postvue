@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>InstaVue</title>
         <script defer type="text/javascript" src="{{ viteJS() }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ viteCSS() }}">
     </head>
