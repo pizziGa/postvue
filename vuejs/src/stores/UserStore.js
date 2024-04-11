@@ -118,7 +118,7 @@ export const useUserStore = defineStore('UserStore', () => {
         pfp: file,
       })
       .then(() => {
-        router.push({ path: '/my-profile' })
+        router.back()
       })
       .catch(error => {
       alert(error)
