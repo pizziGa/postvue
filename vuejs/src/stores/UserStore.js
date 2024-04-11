@@ -83,12 +83,12 @@ export const useUserStore = defineStore('UserStore', () => {
     },
 
     async fetchExplorePosts() {
-      const response = await http.get('/explore/posts')
+      const response = await http.get('explore/posts')
       return response.data.posts
     },
 
     async fetchFollowingPosts() {
-      const response = await http.get('/following/posts')
+      const response = await http.get('following/posts')
       return response.data.posts
     },
 
@@ -111,7 +111,7 @@ export const useUserStore = defineStore('UserStore', () => {
     },
 
     update(file, name, bio) {
-      http.postForm('http://localhost:8080/api/user/update',
+      http.postForm('user/update',
       { 
         name: name,
         bio: bio,
