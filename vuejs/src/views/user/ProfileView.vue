@@ -94,7 +94,7 @@ function fetchUserData() {
         user.following = data.user.following
         isAuth.value = data.isAuth
         isFollowed.value = data.isFollowed
-        pfp_url.value = 'http://localhost:8080/api/user/' + user.pfp
+        pfp_url.value = '/user/' + user.pfp
     })
     .catch(error => {
         console.log(error)

@@ -75,7 +75,7 @@ let likes = ref(post.likes)
 
 const comments = ref(post.comments)
 
-const media_url = 'http://localhost:8080/api/post/' + post.media
+const media_url = '/post/' + post.media
 
 const comment = ref()
 
