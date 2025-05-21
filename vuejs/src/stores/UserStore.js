@@ -11,7 +11,7 @@ export const useUserStore = defineStore('UserStore', () => {
   const isLoggedIn = ref(false)
 
   const http = axios.create({
-    baseURL: "/api/",
+    baseURL: "https://instavue.onrender.com/api/",
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
