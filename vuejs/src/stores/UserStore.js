@@ -118,7 +118,8 @@ export const useUserStore = defineStore('UserStore', () => {
         pfp: file,
       })
       .then(() => {
-        router.back()
+        authName.value = name
+        router.push(`/${authName.value}`)
       })
       .catch(error => {
       alert(error)
@@ -129,6 +130,8 @@ export const useUserStore = defineStore('UserStore', () => {
       http.postForm('user/upload', {
         'media': file,
         'content': content
+      }).then(() => {
+        router.push(`/${authName.value}`)
       })
     },
 
@@ -145,7 +148,8 @@ export const useUserStore = defineStore('UserStore', () => {
     deletePost(id) {
       http.delete('post/'+id)
       .then(() => {
-        router.back()
+        window.location.reload()
+        router.push(`/${authName.value}`)
       })
       .catch(error => {
       alert(error)
