@@ -11,7 +11,7 @@ FROM webdevops/php-nginx:8.3
 COPY --from=0 --chown=1000:1000 /app/laravel /app
 
 COPY init_instavue.conf /opt/docker/etc/supervisor.d/
-RUN chmod +x /app/scripts/start.sh
+RUN chmod +x /app/start.sh
 
 # Image config
 ENV WEB_DOCUMENT_ROOT /app/public
