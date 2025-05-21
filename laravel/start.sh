@@ -9,7 +9,4 @@ echo "Caching routes..."
 php artisan route:cache
 
 echo "Running migrations..."
-php artisan migrate:refresh --force
-
-echo "Linking storage..."
-php artisan storage:link
+php artisan migrate --force
