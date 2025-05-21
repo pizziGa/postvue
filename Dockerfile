@@ -1,13 +1,11 @@
 FROM node:lts-alpine
 
-COPY . /app
-
-WORKDIR /vuejs
+COPY . .
 
 RUN npm install && npm run build
 
 FROM richarvey/nginx-php-fpm:1.7.2
-COPY /app/laravel /app
+COPY . .
 
 # Image config
 ENV SKIP_COMPOSER 1
