@@ -16,11 +16,13 @@ class Post extends Model
         'type'
     ];
 
-    public function likes() {
+    public function likes()
+    {
         return $this->belongsToMany(Like::class);
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany('App\Models\Comment', 'post_id');
     }
 }

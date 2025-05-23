@@ -5,16 +5,31 @@
  */
 import '../css/app.css'
 import './bootstrap';
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import router from '@/router'
 import axios from 'axios'
-import { createPinia } from 'pinia'
+import {createPinia} from 'pinia'
 
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faSearch, faBars, faX, faUser, faAdd, faArrowRightToBracket, faUserPlus, faUserMinus, faHeart, faComment, faArrowRight, faPen, faShareNodes } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as farHeart, faComment as farComment, faTrashCan } from '@fortawesome/free-regular-svg-icons'
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import {
+    faSearch,
+    faBars,
+    faX,
+    faUser,
+    faAdd,
+    faArrowRightToBracket,
+    faUserPlus,
+    faUserMinus,
+    faHeart,
+    faComment,
+    faArrowRight,
+    faPen,
+    faShareNodes
+} from '@fortawesome/free-solid-svg-icons'
+import {faHeart as farHeart, faComment as farComment, faTrashCan} from '@fortawesome/free-regular-svg-icons'
+
 library.add(faSearch, faBars, faX, faUser, faAdd, faArrowRightToBracket, faUserPlus, faUserMinus, faHeart, faComment, farHeart, farComment, faArrowRight, faPen, faTrashCan, faShareNodes)
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -26,6 +41,7 @@ const pinia = createPinia()
 const app = createApp({});
 
 import App from './App.vue';
+
 app.component('app', App);
 
 /**

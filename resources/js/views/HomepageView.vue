@@ -1,8 +1,8 @@
 <template>
     <div class="flex flex-col w-full">
         <div v-for="post in posts" :key="post.id" class="flex flex-col gap-3 items-center justify-center">
-            <post-component :id="post.post_id" :media="post.media" :mediaType="post.type" 
-            :content="post.content" :likes="post.likes" :isLiked="post.isLiked" 
+            <post-component :id="post.post_id" :media="post.media" :mediaType="post.type"
+            :content="post.content" :likes="post.likes" :isLiked="post.isLiked"
             :authorized="false" :author="post.author.name" :comments="post.comments"/>
         </div>
 
@@ -21,7 +21,7 @@ const userStore = useUserStore()
 const posts = ref()
 
 onBeforeMount(() => {
-    if (router.currentRoute.value.name == 'explore') { 
+    if (router.currentRoute.value.name === 'explore') {
         userStore.actions.fetchExplorePosts()
         .then(data => {
             posts.value = data

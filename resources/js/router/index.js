@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router"
+import {createRouter, createWebHistory} from "vue-router"
 
 import HomepageView from '@/views/HomepageView.vue'
 import ProfileView from '@/views/user/ProfileView.vue'

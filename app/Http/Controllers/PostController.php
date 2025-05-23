@@ -32,8 +32,8 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->validate([
-            'media'=>'file|mimes:jpeg,jpg,png,svg,webp,mp4',
-            'content'=>'string|required'
+            'media' => 'file|mimes:jpeg,jpg,png,svg,webp,mp4',
+            'content' => 'string|required'
         ]);
 
         $post = new Post();
@@ -67,8 +67,8 @@ class PostController extends Controller
     public function checkLike(User $user, Post $post): bool
     {
         $like = Like::where('user_id', $user->user_id)
-                    ->where('post_id', $post->post_id)
-                    ->first();
+            ->where('post_id', $post->post_id)
+            ->first();
 
         return ($like) ? true : false;
     }
@@ -85,41 +85,43 @@ class PostController extends Controller
             $post->isLiked = $this->checkLike($request->user(), $post);
             $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
             $post->comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($post->comments as $comment) { 
+            foreach ($post->comments as $comment) {
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
         }
-        
+
         return response()->json([
             'posts' => $posts
-        ]); 
+        ]);
     }
 
     public function fetchPostMedia(Request $request)
     {
         $mediaType = $request->mediaType == 'posts_img' ? 'posts_img/' : 'posts_vids/';
-        return response()->file($mediaType.$request->url);
+        return response()->file($mediaType . $request->url);
     }
 
-    public function fetchExplorePosts(Request $request) {
+    public function fetchExplorePosts(Request $request)
+    {
         $posts = Post::orderByDesc('created_at')->get();
 
         foreach ($posts as $post) {
             $post->isLiked = $this->checkLike($request->user(), $post);
             $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
             $comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($comments as $comment) { 
+            foreach ($comments as $comment) {
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
             $post->comments = $comments;
         }
-        
+
         return response()->json([
             'posts' => $posts
-        ]); 
+        ]);
     }
 
-    public function fetchFollowingPosts(Request $request) { 
+    public function fetchFollowingPosts(Request $request)
+    {
         $following = $request->user()->following()->get();
 
         $posts = new Collection();
@@ -133,7 +135,7 @@ class PostController extends Controller
             $post->isLiked = $this->checkLike($request->user(), $post);
             $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
             $comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($comments as $comment) { 
+            foreach ($comments as $comment) {
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
             $post->comments = $comments;
@@ -158,7 +160,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $post = Post::find($request->id);
-        
+
         if ($request->isLiked == 'true') {
             $post->increment('likes');
             $like = new Like();
@@ -169,9 +171,9 @@ class PostController extends Controller
             $post->decrement('likes');
             $like = Like::where('user_id', $request->user()->user_id)->where('post_id', $post->post_id)->delete();
         }
-        
+
         return response()->json([
-            'isLiked'=>$request->isLiked
+            'isLiked' => $request->isLiked
         ]);
     }
 

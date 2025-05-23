@@ -74,7 +74,7 @@ class FollowController extends Controller
         $followed->decrement('followers');
         $request->user()->decrement('following');
         $follow = Follow::where('followed_id', $followed->user_id)
-                        ->where('follower_id', $request->user()->user_id)->first();
+            ->where('follower_id', $request->user()->user_id)->first();
         $follow->delete();
     }
 }

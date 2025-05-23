@@ -31,17 +31,17 @@ class AuthUserController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->validate([
-            'name'=>'required|string',
-            'email'=>'required|email|unique:users',
-            'password'=>'required|min:8',
-            'birthdate'=>'required'
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'birthdate' => 'required'
         ]);
-        
+
         $user = User::create([
-            'name'=>$storeData['name'],
-            'email'=>$storeData['email'],
-            'password'=>$storeData['password'],
-            'birthdate'=>$storeData['birthdate']
+            'name' => $storeData['name'],
+            'email' => $storeData['email'],
+            'password' => $storeData['password'],
+            'birthdate' => $storeData['birthdate']
         ]);
 
         return response()->json([
@@ -49,10 +49,11 @@ class AuthUserController extends Controller
         ]);
     }
 
-    public function authenticate(Request $request) {
+    public function authenticate(Request $request)
+    {
         $loginData = $request->validate([
-            'email'=>'required|string|email',
-            'password'=>'required|min:8'
+            'email' => 'required|string|email',
+            'password' => 'required|min:8'
         ]);
 
         $user = User::where('email', $loginData['email'])->first();
@@ -63,17 +64,18 @@ class AuthUserController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
+        $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
         return response()->json([
             'username' => $user->name,
             'token' => $token
         ]);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
         return response()->json([
-            'message'=>'User logged out'
+            'message' => 'User logged out'
         ]);
     }
 
@@ -86,22 +88,22 @@ class AuthUserController extends Controller
 
         $followers = $user->followers()->get();
         $isFollowed = false;
-        
+
         foreach ($followers as $follower) {
             ($follower->follower_id == $request->user()->user_id) ? $isFollowed = true : $isFollowed = false;
         }
 
         ($user->user_id == $request->user()->user_id) ? $isAuth = true : $isAuth = false;
         return response()->json([
-            'user'=>$user,
-            'isAuth'=>$isAuth,
-            'isFollowed'=>$isFollowed
+            'user' => $user,
+            'isAuth' => $isAuth,
+            'isFollowed' => $isFollowed
         ]);
     }
 
     public function fetchProfilePicture(Request $request)
     {
-        return response()->file('pfp/'.$request->url);
+        return response()->file('pfp/' . $request->url);
     }
 
     /**
@@ -109,9 +111,9 @@ class AuthUserController extends Controller
      */
     public function searchUser(Request $request)
     {
-        $users = User::select('name')->where('name', 'LIKE', '%'.$request->username.'%')->get();
+        $users = User::select('name')->where('name', 'LIKE', '%' . $request->username . '%')->get();
         return response()->json([
-            'results'=>$users
+            'results' => $users
         ]);
     }
 
@@ -121,21 +123,21 @@ class AuthUserController extends Controller
     public function update(Request $request, User $user)
     {
         $updateData = $request->validate([
-            'name'=>'string',
-            'bio'=>'string',
-            'pfp'=>'image|mimes:jpeg,jpg,png,svg,webp|max:2048'
+            'name' => 'string',
+            'bio' => 'string',
+            'pfp' => 'image|mimes:jpeg,jpg,png,svg,webp|max:2048'
         ]);
 
-        if($request->hasFile('pfp')) {
+        if ($request->hasFile('pfp')) {
             $pfp_image = $request->file('pfp')->store('pfp');
         }
 
         $user = $request->user();
 
         $user->update([
-            'name'=>$updateData['name'],
-            'pfp'=>$pfp_image ?? null,
-            'bio'=>$updateData['bio'] ?? null
+            'name' => $updateData['name'],
+            'pfp' => $pfp_image ?? null,
+            'bio' => $updateData['bio'] ?? null
         ]);
         return response()->json(['User updated']);
     }

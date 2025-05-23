@@ -50,15 +50,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function posts() {
+    public function posts()
+    {
         return $this->hasMany('App\Models\Post', 'user_id');
     }
 
-    public function followers() {
+    public function followers()
+    {
         return $this->hasMany('App\Models\Follow', 'followed_id', 'user_id');
     }
 
-    public function following() {
+    public function following()
+    {
         return $this->hasMany('App\Models\Follow', 'follower_id', 'user_id');
     }
 }

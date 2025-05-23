@@ -6,7 +6,7 @@ import FooterBar from './components/navigation/FooterBar.vue'
 <template>
   <nav-bar/>
 
-  <main class="flex justify-center flex-1 min-h-[calc(100vh-4rem)] font-mono bg-nightmare">
+  <main class="flex justify-center flex-1 min-h-screen bg-nightmare">
     <Suspense>
       <router-view v-slot="{ Component }">
         <Suspense>
