@@ -17,7 +17,7 @@
         </div>
         <div class="flex flex-row gap-1">
             Do you already have an account?
-            <router-link to="/login" class="flex align-middle underline">
+            <router-link to="/login" class="duration-200 flex align-middle underline hover:text-screamin-green">
                 Log in
             </router-link>
         </div>

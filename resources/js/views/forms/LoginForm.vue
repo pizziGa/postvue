@@ -12,7 +12,7 @@
             </button>
         </div>
         <div class="flex flex-row gap-1">
-            Do you not have an account?<router-link to="/signup" class="flex align-middle underline">Sign up</router-link>
+            Do you not have an account?<router-link to="/signup" class="duration-200 flex align-middle underline hover:text-screamin-green">Sign up</router-link>
         </div>
 
     </div>

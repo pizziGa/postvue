@@ -7,6 +7,7 @@ use App\Models\Like;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -41,10 +42,10 @@ class PostController extends Controller
         $ext = $request->file('media')->getMimeType();
 
         if ($ext == 'video/mp4') {
-            $media = $request->file('media')->store('posts_vids');
+            $media = $request->file('media')->store('posts_vids', ["disk" => "s3", "visibility" => "public"]);
             $post->type = 'video';
         } else {
-            $media = $request->file('media')->store('posts_img');
+            $media = $request->file('media')->store('posts_img', ["disk" => "s3", "visibility" => "public"]);
             $post->type = 'image';
         }
 
@@ -70,7 +71,7 @@ class PostController extends Controller
             ->where('post_id', $post->post_id)
             ->first();
 
-        return ($like) ? true : false;
+        return (bool)$like;
     }
 
     /**
@@ -88,6 +89,7 @@ class PostController extends Controller
             foreach ($post->comments as $comment) {
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
+            $post->media = Storage::disk('s3')->url($post->media);
         }
 
         return response()->json([
@@ -95,11 +97,12 @@ class PostController extends Controller
         ]);
     }
 
-    public function fetchPostMedia(Request $request)
-    {
-        $mediaType = $request->mediaType == 'posts_img' ? 'posts_img/' : 'posts_vids/';
-        return response()->file($mediaType . $request->url);
-    }
+//    public function fetchPostMedia(Request $request)
+//    {
+//        $mediaType = $request->mediaType == 'posts_img' ? 'posts_img/' : 'posts_vids/';
+//        Storage::url('file.jpg');
+//        return response()->file($mediaType . $request->url);
+//    }
 
     public function fetchExplorePosts(Request $request)
     {

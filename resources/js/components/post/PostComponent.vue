@@ -13,8 +13,8 @@
             </div>
 
             <div class="flex justify-center items-center border-b-2 border-t-2 border-nightmare bg-night">
-                <img v-if="post.mediaType == 'image'" :src="media_url"/>
-                <video v-else :src="media_url" controls
+                <img v-if="post.mediaType === 'image'" alt="image" :src="media"/>
+                <video v-else :src="media" controls
                        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"></video>
             </div>
 
@@ -22,7 +22,7 @@
                 <button @click="likePost" class="flex flex-row items-center">
                     <font-awesome-icon :icon="[likeIconPressed, 'fa-heart']"
                                        :class="['hover:text-red-700 duration-200 text-white', likeColorPressed]"></font-awesome-icon>
-                    <p class="text-base text-white">:{{ likes }}</p>
+                    <span class="text-base text-white">:{{ likes }}</span>
                 </button>
                 <button @click="openComments">
                     <font-awesome-icon :icon="[commentsIconPressed, 'fa-comment']"
@@ -83,7 +83,7 @@ let likes = ref(post.likes)
 
 const comments = ref(post.comments)
 
-const media_url = '/api/post/' + post.media
+//const media_url = '/api/post/' + post.media
 
 const comment = ref()
 

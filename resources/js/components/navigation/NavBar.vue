@@ -39,6 +39,7 @@
                     <div class="flex relative w-full md:w-96">
                         <input
                             v-model="searchQuery"
+                            :class="searchBoxQuery ? 'rounded-b-none' : ''"
                             class="md:ml-14 w-full p-[4px] focus:outline-none bg-night rounded rounded-md text-white placeholder:text-white placeholder:opacity-45 focus:bg-eerie-black hover:bg-eerie-black"
                             type="search"
                             placeholder="Search..."
@@ -46,7 +47,7 @@
                     </div>
 
                     <ul v-for="result in results" :key="result.name" v-if="searchBoxQuery"
-                        class="flex flex-col text-left absolute start-4 md:start-50 top-[105px] md:w-82 md:top-[51px] p-5 text-lg bg-night rounded-md text-white">
+                        class="flex flex-col text-left absolute rounded-t-none start-4 md:left-50 top-[100px] md:w-82 md:top-[50px] p-5 text-lg bg-night rounded-md text-white">
                         <li class="w-[60vh] md:w-96">
                             <router-link :to="'/'+result.name"
                                          class="hover:text-screamin-green duration-200">{{ result.name }}
@@ -131,7 +132,6 @@ import {useUserStore} from '@/stores/UserStore';
 import router from '@/router'
 import debounce from 'lodash.debounce'
 
-const webName = 'InstaVue'
 const isMenuOpened = ref(false)
 const isSearchBoxOpened = ref(false)
 
