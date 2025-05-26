@@ -21,12 +21,12 @@
             <div class="flex flex-row p-2 px-4 text-3xl gap-4">
                 <button @click="likePost" class="flex flex-row items-center">
                     <font-awesome-icon :icon="[likeIconPressed, 'fa-heart']"
-                                       :class="['hover:text-red-700 duration-200 text-white', likeColorPressed]"></font-awesome-icon>
+                                       :class="['hover:text-red-700 duration-200', likeColorPressed]"></font-awesome-icon>
                     <span class="text-base text-white">:{{ likes }}</span>
                 </button>
                 <button @click="openComments">
                     <font-awesome-icon :icon="[commentsIconPressed, 'fa-comment']"
-                                       :class="['hover:text-screamin-green duration-200 text-white', commentColorPressed]"></font-awesome-icon>
+                                       :class="['hover:text-screamin-green duration-200', commentColorPressed]"></font-awesome-icon>
                 </button>
             </div>
 
@@ -38,14 +38,14 @@
                 <div v-else class="flex flex-col font-semibold w-full h-full bg-night rounded-b-2xl">
                     <div class="h-full overflow-scroll overflow-x-hidden">
                         <div v-for="comment in comments" :key="comment.content">
-                            <comment-component :author="comment.author.name" :content="comment.content"/>
+                            <comment-component :author="comment.author.name" :content="comment.comment"/>
                         </div>
                     </div>
                     <div class="flex flex-row flex-nowrap border-t-2 border-nightmare border-0">
                         <input type="text" v-model="comment" placeholder="Comment..."
-                               class="w-[85%] p-2 rounded-bl-2xl placeholder:text-eerie-black focus:outline-none text-white bg-night">
+                               class="w-[85%] p-2 rounded-bl-2xl border-abysm border-r-2 placeholder:text-white focus:bg-eerie-black placeholder:opacity-45 duration-200 focus:outline-none text-white bg-night hover:bg-eerie-black">
                         <button @click="userStore.actions.uploadComment(post.id, comment)"
-                                class="p-2 w-[25%] rounded-br-2xl border-primary-black text-white bg-screamin-green hover:text-mantis duration-200">
+                                class="p-2 w-[25%] rounded-br-2xl text-white bg-night hover:bg-eerie-black  duration-200">
                             <font-awesome-icon icon="fa-solid fa-arrow-right"></font-awesome-icon>
                         </button>
                     </div>
@@ -112,7 +112,6 @@ const likeColorPressed = computed(() => {
         return 'text-white'
     }
 })
-
 
 const commentColorPressed = computed(() => {
     if (isCommentOpened.value) {

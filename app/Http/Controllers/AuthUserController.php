@@ -6,6 +6,8 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\AuthenticateUserRequest;
 use App\Http\Requests\LogoutUserRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -13,22 +15,15 @@ use Illuminate\Support\File;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class AuthUserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         $storeData = $request->validate([
             'name' => 'required|string',
@@ -37,19 +32,17 @@ class AuthUserController extends Controller
             'birthdate' => 'required'
         ]);
 
-        $user = User::create([
+        User::create([
             'name' => $storeData['name'],
             'email' => $storeData['email'],
             'password' => $storeData['password'],
             'birthdate' => $storeData['birthdate']
         ]);
 
-        return response()->json([
-            'message' => 'User created',
-        ]);
+        return response(200);
     }
 
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): JsonResponse
     {
         $loginData = $request->validate([
             'email' => 'required|string|email',
@@ -65,24 +58,24 @@ class AuthUserController extends Controller
         }
 
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
+
         return response()->json([
             'username' => $user->name,
             'token' => $token
         ]);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): Response
     {
         $request->user()->tokens()->delete();
-        return response()->json([
-            'message' => 'User logged out'
-        ]);
+
+        return response(200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function fetchUser(Request $request)
+    public function fetchUser(Request $request): JsonResponse
     {
         $user = User::where('name', $request->username)->first();
 
@@ -94,6 +87,7 @@ class AuthUserController extends Controller
         }
 
         ($user->user_id == $request->user()->user_id) ? $isAuth = true : $isAuth = false;
+
         return response()->json([
             'user' => $user,
             'isAuth' => $isAuth,
@@ -101,7 +95,7 @@ class AuthUserController extends Controller
         ]);
     }
 
-    public function fetchProfilePicture(Request $request)
+    public function fetchProfilePicture(Request $request): BinaryFileResponse
     {
         return response()->file('pfp/' . $request->url);
     }
@@ -109,9 +103,10 @@ class AuthUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function searchUser(Request $request)
+    public function searchUser(Request $request): JsonResponse
     {
         $users = User::select('name')->where('name', 'LIKE', '%' . $request->username . '%')->get();
+
         return response()->json([
             'results' => $users
         ]);
@@ -120,7 +115,7 @@ class AuthUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request): JsonResponse
     {
         $updateData = $request->validate([
             'name' => 'string',
@@ -139,6 +134,7 @@ class AuthUserController extends Controller
             'pfp' => $pfp_image ?? null,
             'bio' => $updateData['bio'] ?? null
         ]);
+
         return response()->json(['User updated']);
     }
 

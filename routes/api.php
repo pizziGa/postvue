@@ -20,23 +20,28 @@ use Illuminate\Support\Facades\Route;
 
 //
 
+// User
 Route::post('/user/store', [AuthUserController::class, 'store']);
 
 Route::post('/user/authenticate', [AuthUserController::class, 'authenticate']);
 
+Route::middleware('auth:sanctum')->get('/user/profile/{username}', [AuthUserController::class, 'fetchUser']);
+
+Route::middleware('auth:sanctum')->get('/user/logout', [AuthUserController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->patch('/user/update', [AuthUserController::class, 'update']);
+
 Route::get('/user/pfp/{url}', [AuthUserController::class, 'fetchProfilePicture']);
 
+Route::middleware('auth:sanctum')->get('/user/search/{username}', [AuthUserController::class, 'searchUser']);
+
+
+// Post
 Route::get('/post/{mediaType}/{url}', [PostController::class, 'fetchPostMedia']);
 
 Route::middleware('auth:sanctum')->get('/post/{id}', [PostController::class, 'update']);
 
 Route::middleware('auth:sanctum')->delete('/post/{id}', [PostController::class, 'destroy']);
-
-Route::middleware('auth:sanctum')->get('/user/logout', [AuthUserController::class, 'logout']);
-
-Route::middleware('auth:sanctum')->get('/user/profile/{username}', [AuthUserController::class, 'fetchUser']);
-
-Route::middleware('auth:sanctum')->post('/user/update', [AuthUserController::class, 'update']);
 
 Route::middleware('auth:sanctum')->post('/user/upload', [PostController::class, 'store']);
 
@@ -46,10 +51,13 @@ Route::middleware('auth:sanctum')->get('/explore/posts', [PostController::class,
 
 Route::middleware('auth:sanctum')->get('/following/posts', [PostController::class, 'fetchFollowingPosts']);
 
+
+// Comment
 Route::middleware('auth:sanctum')->post('/post/{post_id}/comment', [CommentController::class, 'store']);
 
+
+// Follow
 Route::middleware('auth:sanctum')->post('/user/follow', [FollowController::class, 'store']);
 
 Route::middleware('auth:sanctum')->post('/user/unfollow', [FollowController::class, 'destroy']);
 
-Route::middleware('auth:sanctum')->get('/user/search/{username}', [AuthUserController::class, 'searchUser']);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
@@ -24,5 +25,9 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany('App\Models\Comment', 'post_id');
+    }
+
+    public function mediaURL() {
+        $post->media = Storage::disk('s3')->url($post->media);
     }
 }

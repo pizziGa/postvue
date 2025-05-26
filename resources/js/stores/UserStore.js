@@ -26,7 +26,6 @@ export const useUserStore = defineStore('UserStore', () => {
         token.value = localStorage.getItem('token')
         authName.value = localStorage.getItem('name')
         isLoggedIn.value = true
-        console.log(import.meta.env.VITE_BACKEND_URL)
     } else {
         router.push({path: '/login'})
     }
@@ -111,7 +110,7 @@ export const useUserStore = defineStore('UserStore', () => {
         },
 
         update(file, name, bio) {
-            http.postForm('user/update',
+            http.patchForm('user/update',
                 {
                     name: name,
                     bio: bio,

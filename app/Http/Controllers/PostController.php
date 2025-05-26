@@ -6,31 +6,17 @@ use App\Models\Post;
 use App\Models\Like;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         $storeData = $request->validate([
             'media' => 'file|mimes:jpeg,jpg,png,svg,webp,mp4',
@@ -77,7 +63,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function fetchProfilePosts(Request $request)
+    public function fetchProfilePosts(Request $request): JsonResponse
     {
         $user = User::where('name', $request->username)->first();
         $posts = $user->posts()->get();
@@ -104,7 +90,7 @@ class PostController extends Controller
 //        return response()->file($mediaType . $request->url);
 //    }
 
-    public function fetchExplorePosts(Request $request)
+    public function fetchExplorePosts(Request $request): JsonResponse
     {
         $posts = Post::orderByDesc('created_at')->get();
 
@@ -116,6 +102,7 @@ class PostController extends Controller
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
             $post->comments = $comments;
+            $post->media = Storage::disk('s3')->url($post->media);
         }
 
         return response()->json([
@@ -123,7 +110,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function fetchFollowingPosts(Request $request)
+    public function fetchFollowingPosts(Request $request): JsonResponse
     {
         $following = $request->user()->following()->get();
 
@@ -142,6 +129,7 @@ class PostController extends Controller
                 $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
             }
             $post->comments = $comments;
+            $post->media = Storage::disk('s3')->url($post->media);
         }
 
         return response()->json([
@@ -150,21 +138,13 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request): JsonResponse
     {
         $post = Post::find($request->id);
 
-        if ($request->isLiked == 'true') {
+        if ($request->isLiked) {
             $post->increment('likes');
             $like = new Like();
             $like->post_id = $post->post_id;
@@ -172,7 +152,7 @@ class PostController extends Controller
             $like->save();
         } else {
             $post->decrement('likes');
-            $like = Like::where('user_id', $request->user()->user_id)->where('post_id', $post->post_id)->delete();
+            Like::where('user_id', $request->user()->user_id)->where('post_id', $post->post_id)->delete();
         }
 
         return response()->json([
