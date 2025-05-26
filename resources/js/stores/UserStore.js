@@ -110,7 +110,7 @@ export const useUserStore = defineStore('UserStore', () => {
         },
 
         update(file, name, bio) {
-            http.patchForm('user/update',
+            http.postForm('user/update',
                 {
                     name: name,
                     bio: bio,

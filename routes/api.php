@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user/profile/{username}', [AuthUserCont
 
 Route::middleware('auth:sanctum')->get('/user/logout', [AuthUserController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->patch('/user/update', [AuthUserController::class, 'update']);
+Route::middleware('auth:sanctum')->post('/user/update', [AuthUserController::class, 'update']);
 
 Route::get('/user/pfp/{url}', [AuthUserController::class, 'fetchProfilePicture']);
 
