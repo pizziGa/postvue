@@ -8,7 +8,7 @@
             <textarea
                 class="border-b-2 w-80 h-12 border-eerie-black duration-200 focus:border-screamin-green hover:border-screamin-green bg-nightmare focus:outline-none placeholder:font-semibold placeholder:text-lg placeholder:text-white text-white p-1"
                 placeholder="Content..." v-model="content"></textarea>
-            <button @click="user.actions.upload(file.files[0], content)"
+            <button @click="post.actions.upload(file.files[0], content)"
                     class="flex items-center justify-center text-center text-base p-2 gap-2 text-white hover:bg-eerie-black bg-night duration-200 rounded-md w-18">
                 Create
             </button>
@@ -18,9 +18,9 @@
 
 <script setup>
 import {ref} from 'vue'
-import {useUserStore} from '@/stores/UserStore';
+import {usePostStore} from "../../stores/PostStore.js";
 
-const user = useUserStore()
+const post = usePostStore()
 
 const file = ref()
 const content = ref()

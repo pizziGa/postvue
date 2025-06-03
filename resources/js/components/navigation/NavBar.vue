@@ -40,7 +40,7 @@
                         <input
                             v-model="searchQuery"
                             :class="searchBoxQuery ? 'rounded-b-none' : ''"
-                            class="md:ml-14 w-full p-[4px] focus:outline-none bg-night rounded rounded-md text-white placeholder:text-white placeholder:opacity-45 focus:bg-eerie-black hover:bg-eerie-black"
+                            class="md:ml-14 w-full p-[5px] focus:outline-none bg-night rounded rounded-2xl text-white placeholder:text-white placeholder:opacity-45 focus:bg-eerie-black hover:bg-eerie-black"
                             type="search"
                             placeholder="Search..."
                         />
@@ -128,7 +128,7 @@
 
 <script setup>
 import {ref, computed, watch} from 'vue'
-import {useUserStore} from '@/stores/UserStore';
+import {useUserStore} from '../../stores/UserStore';
 import router from '@/router'
 import debounce from 'lodash.debounce'
 

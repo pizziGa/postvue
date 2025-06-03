@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\AuthenticateUserRequest;
-use App\Http\Requests\LogoutUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -23,14 +23,9 @@ class AuthUserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Response
+    public function store(StoreUserRequest $request): Response
     {
-        $storeData = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'birthdate' => 'required'
-        ]);
+        $storeData = $request->validated();
 
         User::create([
             'name' => $storeData['name'],
@@ -42,12 +37,9 @@ class AuthUserController extends Controller
         return response(200);
     }
 
-    public function authenticate(Request $request): JsonResponse
+    public function authenticate(AuthenticateUserRequest $request): JsonResponse
     {
-        $loginData = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|min:8'
-        ]);
+        $loginData = $request->validated();
 
         $user = User::where('email', $loginData['email'])->first();
 
@@ -88,6 +80,10 @@ class AuthUserController extends Controller
 
         ($user->user_id == $request->user()->user_id) ? $isAuth = true : $isAuth = false;
 
+        if ($user->pfp != null) {
+            $user->pfp = Storage::disk('s3')->url($user->pfp);
+        }
+
         return response()->json([
             'user' => $user,
             'isAuth' => $isAuth,
@@ -95,17 +91,12 @@ class AuthUserController extends Controller
         ]);
     }
 
-    public function fetchProfilePicture(Request $request): BinaryFileResponse
-    {
-        return response()->file('pfp/' . $request->url);
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
-    public function searchUser(Request $request): JsonResponse
+    public function searchUser(string $username): JsonResponse
     {
-        $users = User::select('name')->where('name', 'LIKE', '%' . $request->username . '%')->get();
+        $users = User::select('name')->where('name', 'LIKE', '%' . $username . '%')->get();
 
         return response()->json([
             'results' => $users
@@ -115,16 +106,12 @@ class AuthUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request): JsonResponse
+    public function update(UpdateUserRequest $request): JsonResponse
     {
-        $updateData = $request->validate([
-            'name' => 'string',
-            'bio' => 'string',
-            'pfp' => 'image|mimes:jpeg,jpg,png,svg,webp|max:2048'
-        ]);
+        $updateData = $request->validated();
 
-        if ($request->hasFile('pfp')) {
-            $pfp_image = $request->file('pfp')->store('pfp');
+        if ($request->pfp != null) {
+            $pfp_image = $request->file('pfp')->store('pfp', ["disk" => "s3", "visibility" => "public"]);
         }
 
         $user = $request->user();

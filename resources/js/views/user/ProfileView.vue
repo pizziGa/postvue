@@ -1,20 +1,20 @@
 <template>
     <div class="flex flex-col w-full">
-        <div class="flex flex-col">
-            <div class="flex flex-row items-center justify-center gap-5 p-3">
+        <div class="flex flex-col items-center justify-center">
+            <div class="flex flex-col items-center justify-center gap-5 p-3">
                 <div class="flex items-center justify-center rounded-full border-3 border-screamin-green shadow-sm shadow-nightmare">
-                    <img v-if="user.pfp != undefined" :src="pfp_url" class="w-20 h-20 rounded-full">
+                    <img v-if="user.pfp != undefined" :src="user.pfp" class="w-20 h-20 rounded-full">
                     <img v-else src="../../../assets/default.jpg" class="w-20 h-20 rounded-full">
                 </div>
 
-                <div class="flex flex-col text-white">
-                    <h1 class="text-2xl">{{ user.name }}</h1>
-                    <div class="flex flex-row items-center justify-center gap-4 text-white">
+                <div class="flex flex-col text-white items-center justify-center">
+                    <h1 class="text-2xl select-none">{{ user.name }}</h1>
+                    <div class="flex flex-row items-center justify-center gap-4 text-white select-none">
                         <p class="text-base">{{ user.followers }} followers</p>
                         <p class="text-base">{{ user.following }} following</p>
                     </div>
 
-                    <p v-if="user.bio != undefined" class="w-full text-sm md:w-1/2 font-normal">{{ user.bio }}</p>
+                    <p v-if="user.bio != undefined" class="w-full text-sm md:w-1/2 font-normal text-center select-none">{{ user.bio }}</p>
                     <p v-else class="text-center w-full text-sm md:w-1/2 font-normal">There isn't a bio here yet. Let's start writing one!</p>
                 </div>
             </div>
@@ -32,11 +32,10 @@
             </div>
         </div>
 
-        <div v-for="post in posts" :key="post.id" class="flex flex-col gap-3 items-center justify-center">
-            <post-component :id="post.post_id" :media="post.media" :mediaType="post.type"
+        <div class="flex flex-col gap-3 items-center justify-center">
+            <post-component v-for="post in posts" :key="post.id"  :id="post.post_id" :media="post.media" :mediaType="post.type"
             :content="post.content" :likes="post.likes" :isLiked="post.isLiked" :authorized="isAuth"
-            :author="post.author.name" :comments="post.comments"/>
-            <!--<h1 class="text-xl p-5 font-semibold">There aren't any posts here yet</h1>-->
+            :author="post.author.name" @delete="fetchUserPosts"/>
         </div>
     </div>
 </template>
@@ -46,8 +45,10 @@ import PostComponent from '../../components/post/PostComponent.vue';
 import { ref, computed, reactive, onBeforeMount } from 'vue'
 import { useUserStore } from '../../stores/UserStore';
 import router from '@/router'
+import {usePostStore} from "../../stores/PostStore.js";
 
 const userStore = useUserStore()
+const postStore = usePostStore()
 
 const isFollowed = ref(false)
 
@@ -84,7 +85,6 @@ function followUser() {
         user.followers -= 1;
         userStore.actions.unfollowUser(prop)
     }
-
 }
 
 function fetchUserData() {
@@ -105,7 +105,7 @@ function fetchUserData() {
 }
 
 function fetchUserPosts() {
-    userStore.actions.fetchUserPost(prop)
+    postStore.actions.fetchUserPost(prop)
     .then(data => {
         posts.value = data
     })
@@ -118,10 +118,10 @@ function copyToClipboard() {
     const path = window.location.origin + router.currentRoute.value.path
     navigator.clipboard.writeText(path);
     alert('Link copied to clipboard!');
- }
+}
 
-onBeforeMount(async () => {
-    await fetchUserData()
-    await fetchUserPosts()
+onBeforeMount(() => {
+    fetchUserData()
+    fetchUserPosts()
 })
 </script>

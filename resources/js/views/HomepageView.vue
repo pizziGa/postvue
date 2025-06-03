@@ -13,16 +13,16 @@
 <script setup>
 import PostComponent from '../components/post/PostComponent.vue';
 import { ref, onBeforeMount } from 'vue'
-import { useUserStore } from '@/stores/UserStore';
+import {usePostStore} from "../stores/PostStore.js";
 import router from '@/router';
 
-const userStore = useUserStore()
+const postStore = usePostStore().actions
 
 const posts = ref()
 
 onBeforeMount(() => {
     if (router.currentRoute.value.name === 'explore') {
-        userStore.actions.fetchExplorePosts()
+        postStore.fetchExplorePosts()
         .then(data => {
             posts.value = data
         })
@@ -30,7 +30,7 @@ onBeforeMount(() => {
             console.log(error)
         })
     } else {
-        userStore.actions.fetchFollowingPosts()
+        postStore.fetchFollowingPosts()
         .then(data => {
             posts.value = data
         })

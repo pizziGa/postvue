@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {ref, watch} from 'vue'
-import axios from 'axios'
+import {http} from "./http.js";
 import router from '@/router'
 
 export const useUserStore = defineStore('UserStore', () => {
@@ -9,13 +9,6 @@ export const useUserStore = defineStore('UserStore', () => {
     const authName = ref()
 
     const isLoggedIn = ref(false)
-
-    const http = axios.create({
-        baseURL: "/api/",
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-    })
 
     http.interceptors.request.use(function (config) {
         config.headers.Authorization = 'Bearer ' + token.value;
@@ -77,23 +70,8 @@ export const useUserStore = defineStore('UserStore', () => {
         },
 
         async fetchUser(username) {
-            const response = await http.get('user/profile/' + username)
+            const response = await http.get('user/' + username)
             return response.data
-        },
-
-        async fetchExplorePosts() {
-            const response = await http.get('explore/posts')
-            return response.data.posts
-        },
-
-        async fetchFollowingPosts() {
-            const response = await http.get('following/posts')
-            return response.data.posts
-        },
-
-        async fetchUserPost(username) {
-            const response = await http.get('user/' + username + '/posts')
-            return response.data.posts
         },
 
         logout() {
@@ -118,37 +96,6 @@ export const useUserStore = defineStore('UserStore', () => {
                 })
                 .then(() => {
                     authName.value = name
-                    router.push(`/${authName.value}`)
-                })
-                .catch(error => {
-                    alert(error)
-                })
-        },
-
-        upload(file, content) {
-            http.postForm('user/upload', {
-                'media': file,
-                'content': content
-            }).then(() => {
-                router.push(`/${authName.value}`)
-            })
-        },
-
-        likePost(id, isLiked) {
-            http.get('post/' + id + '?isLiked=' + isLiked)
-        },
-
-        uploadComment(id, comment) {
-            http.postForm('post/' + id + '/comment', {
-                'content': comment,
-                'post_id': id
-            })
-        },
-
-        deletePost(id) {
-            http.delete('post/' + id)
-                .then(() => {
-                    window.location.reload()
                     router.push(`/${authName.value}`)
                 })
                 .catch(error => {

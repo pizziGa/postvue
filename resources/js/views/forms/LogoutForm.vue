@@ -6,16 +6,17 @@
                     class="flex items-center justify-center text-center md:text-base text-xl p-2 gap-2 text-white hover:bg-eerie-black bg-night duration-200 rounded-md w-24">
                 Yes
             </button>
-            <router-link to="/"
-                         class="flex items-center justify-center text-center md:text-base text-xl p-2 gap-2 text-white hover:bg-eerie-black bg-night duration-200 rounded-md w-24">
+            <button @click="router.back()"
+                    class="flex items-center justify-center text-center md:text-base text-xl p-2 gap-2 text-white hover:bg-eerie-black bg-night duration-200 rounded-md w-24">
                 Go back
-            </router-link>
+            </button>
         </div>
     </div>
 </template>
 
 <script setup>
 import {useUserStore} from '../../stores/UserStore';
+import router from "../../router/index.js";
 
 const user = useUserStore()
 </script>

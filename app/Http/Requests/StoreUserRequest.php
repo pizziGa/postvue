@@ -22,10 +22,10 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required',
-            'email'=>'required|unique:users,email',
-            'password'=>'required',
-            'birthdate'=>'required'
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'birthdate' => 'required'
         ];
     }
 }

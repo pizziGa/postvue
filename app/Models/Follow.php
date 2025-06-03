@@ -10,4 +10,9 @@ class Follow extends Model
     use HasFactory;
 
     protected $primaryKey = 'follow_id';
+
+    protected $fillable = [
+        'followed_id',
+        'follower_id',
+    ];
 }

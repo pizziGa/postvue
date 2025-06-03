@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\Like;
 use App\Models\User;
@@ -16,12 +17,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Response
+    public function store(StorePostRequest $request): Response
     {
-        $storeData = $request->validate([
-            'media' => 'file|mimes:jpeg,jpg,png,svg,webp,mp4',
-            'content' => 'string|required'
-        ]);
+        $storeData = $request->validated();
 
         $post = new Post();
 
@@ -63,51 +61,23 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function fetchProfilePosts(Request $request): JsonResponse
+    public function fetchProfilePosts(Request $request, string $username): JsonResponse
     {
-        $user = User::where('name', $request->username)->first();
-        $posts = $user->posts()->get();
+        $user = User::where('name', $username)->first();
+        $posts = $user->posts()->orderBy('created_at', 'desc')->get();
 
-        foreach ($posts as $post) {
-            $post->isLiked = $this->checkLike($request->user(), $post);
-            $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
-            $post->comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($post->comments as $comment) {
-                $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
-            }
-            $post->media = Storage::disk('s3')->url($post->media);
-        }
+        $this->sortPosts($request, $posts);
 
-        return response()->json([
-            'posts' => $posts
-        ]);
+        return response()->json($posts);
     }
-
-//    public function fetchPostMedia(Request $request)
-//    {
-//        $mediaType = $request->mediaType == 'posts_img' ? 'posts_img/' : 'posts_vids/';
-//        Storage::url('file.jpg');
-//        return response()->file($mediaType . $request->url);
-//    }
 
     public function fetchExplorePosts(Request $request): JsonResponse
     {
         $posts = Post::orderByDesc('created_at')->get();
 
-        foreach ($posts as $post) {
-            $post->isLiked = $this->checkLike($request->user(), $post);
-            $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
-            $comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($comments as $comment) {
-                $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
-            }
-            $post->comments = $comments;
-            $post->media = Storage::disk('s3')->url($post->media);
-        }
+        $this->sortPosts($request, $posts);
 
-        return response()->json([
-            'posts' => $posts
-        ]);
+        return response()->json($posts);
     }
 
     public function fetchFollowingPosts(Request $request): JsonResponse
@@ -118,33 +88,23 @@ class PostController extends Controller
 
         foreach ($following as $followed) {
             $user = User::where('user_id', $followed->followed_id)->first();
-            $posts = $posts->merge($user->posts()->get());
+            $posts = $posts->merge($user->posts()->orderBy('created_at', 'desc')->get());
         }
 
-        foreach ($posts as $post) {
-            $post->isLiked = $this->checkLike($request->user(), $post);
-            $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
-            $comments = $post->comments()->orderByDesc('created_at')->get();
-            foreach ($comments as $comment) {
-                $comment->author = User::where('user_id', $comment->user_id)->first()->only(['name']);
-            }
-            $post->comments = $comments;
-            $post->media = Storage::disk('s3')->url($post->media);
-        }
+        $this->sortPosts($request, $posts);
 
-        return response()->json([
-            'posts' => $posts
-        ]);
+        return response()->json($posts);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, string $post_id): Response
     {
-        $post = Post::find($request->id);
+        $post = Post::find($post_id);
+        $isLiked = $request->query('isLiked');
 
-        if ($request->isLiked) {
+        if ($isLiked == 'true') {
             $post->increment('likes');
             $like = new Like();
             $like->post_id = $post->post_id;
@@ -155,16 +115,29 @@ class PostController extends Controller
             Like::where('user_id', $request->user()->user_id)->where('post_id', $post->post_id)->delete();
         }
 
-        return response()->json([
-            'isLiked' => $request->isLiked
-        ]);
+        return response(200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Post $post)
+    public function destroy(Request $request, Post $post): Response
     {
-        $post->find($request->id)->delete();
+        $post = $post->find($request->id);
+        Storage::disk('s3')->delete(''.$post->media);
+        $post->likes()->delete();
+        $post->comments()->delete();
+        $post->delete();
+
+        return response(200);
+    }
+
+    private function sortPosts(Request $request, Collection $posts): void
+    {
+        foreach ($posts as $post) {
+            $post->isLiked = $this->checkLike($request->user(), $post);
+            $post->author = User::where('user_id', $post->user_id)->first()->only(['name']);
+            $post->media = Storage::disk('s3')->url($post->media);
+        }
     }
 }
