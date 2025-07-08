@@ -9,14 +9,10 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\File;
-use Exception;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Sanctum\PersonalAccessToken;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use Illuminate\Support\Facades\Storage;
 
 class AuthUserController extends Controller
 {

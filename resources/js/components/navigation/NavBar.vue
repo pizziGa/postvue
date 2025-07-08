@@ -17,7 +17,7 @@
                         href="/"
                     >
                         <div class="font-semibold text-3xl">
-                            Insta<span class="text-screamin-green">Vue</span>
+                            Post<span class="text-screamin-green">Vue</span>
                         </div>
 
                         <div class="text-xs">DEMO</div>
